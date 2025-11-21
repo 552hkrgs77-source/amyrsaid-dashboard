@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Exclusive amyrsaid - Abonnés Only 🔥</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Orbitron', monospace;
+            background: radial-gradient(circle at 20% 50%, #0f0f23 0%, #000000 50%, #1a0033 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            border-radius: 30px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.6s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal h2 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        .modal p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .discord-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #7289da, #5865f2, #99aab5);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(114, 137, 218, 0.3);
+            margin-bottom: 1.5rem;
+        }
+        .discord-link:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(114, 137, 218, 0.5);
+        }
+        #passInput {
+            width: 100%;
+            max-width: 300px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(0, 255, 136, 0.5);
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 1.2rem;
+            color: #fff;
+            font-family: inherit;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+        #passInput:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+        #passInput::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .enter-btn {
+            background: linear-gradient(45deg, #00ff88, #0088ff);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            color: #000;
+            font-family: inherit;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.3);
+        }
+        .enter-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 255, 136, 0.5);
+        }
+        .hidden {
+            display: none;
+        }
+        #dashboard {
+            min-height: 100vh;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 1s ease-out;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        header h1 {
+            font-size: 4rem;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+            margin-bottom: 1rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px #00ffff); }
+            to { filter: drop-shadow(0 0 30px #ff00ff); }
+        }
+        header p {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        section {
+            margin: 3rem 0;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+        }
+        section:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 255, 136, 0.6);
+            box-shadow: 0 30px 60px rgba(0, 255, 136, 0.2);
+        }
+        section h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        .profile-link, .game-link {
+            display: block;
+            margin: 1.5rem 0;
+            padding: 1.5rem 2rem;
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 20px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-link::before, .game-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        .profile-link:hover::before, .game-link:hover::before {
+            left: 100%;
+        }
+        .profile-link:hover, .game-link:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.4);
+            background: rgba(0, 255, 136, 0.2);
+        }
+        .join-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 2rem auto 0;
+            padding: 2rem 3rem;
+            background: linear-gradient(45deg, #7289da, #5865f2, #99aab5);
+            border-radius: 50px;
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-decoration: none;
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(114, 137, 218, 0.4);
+            transition: all 0.4s;
+        }
+        .join-btn:hover {
+            transform: scale(1.1) translateY(-10px);
+            box-shadow: 0 30px 60px rgba(114, 137, 218, 0.6);
+        }
+        .logout-btn {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background: #ff4444;
+            color: #fff;
+        }
+        @media (max-width: 768px) {
+            #dashboard { padding: 1rem; }
+            header h1 { font-size: 2.5rem; }
+            section { padding: 2rem 1.5rem; margin: 2rem 0; }
+            .modal-content { padding: 2rem 1.5rem; margin: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bgCanvas"></canvas>
+    
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <h2>🔒 Accès Abonnés Only</h2>
+            <p>Rejoignez mon serveur Discord pour le mot de passe</p>
+            <a href="https://discord.gg/rvK93SEwVZ" target="_blank" class="discord-link">🚀 Rejoindre Chaos Server</a>
+            <input type="password" id="passInput" placeholder="Entrez le mot de passe secret...">
+            <button class="enter-btn" onclick="checkPass()">🚀 Entrer dans le Dashboard</button>
+        </div>
+    </div>
+    
+    <div id="dashboard" class="hidden">
+        <button class="logout-btn" onclick="logout()">Déconnexion</button>
+        
+        <header>
+            <h1>amyrsaid's Dashboard</h1>
+            <p>Exclusive pour mes abonnés Roblox & Discord 🔥💎</p>
+        </header>
+        
+        <section id="roblox">
+            <h2>🎮 Roblox</h2>
+            <a href="https://www.roblox.com/users/1258884658/profile" target="_blank" class="profile-link">👤 Voir mon Profil Roblox</a>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; max-width: 600px; margin: 0 auto;">
+                <a href="https://www.roblox.com/games/3996833677" target="_blank" class="game-link">🏠 amyrsaid's Place (13 visites)</a>
+                <a href="https://www.roblox.com/games/10327771598" target="_blank" class="game-link">👻 horor mar 123</a>
+            </div>
+        </section>
+        
+        <section id="discord">
+            <h2>💬 Discord</h2>
+            <p style="text-align: center; margin-bottom: 2rem; color: rgba(255,255,255,0.8);">Rejoins le Chaos Server pour plus d'exclusivités !</p>
+            <a href="https://discord.gg/rvK93SEwVZ" target="_blank" class="join-btn">🎉 Rejoindre Chaos Server MAINTENANT</a>
+        </section>
+    </div>
+
+    <script>
+        // ========================================
+        // CHANGEZ CE MOT DE PASSE ICI POUR LA SÉCURITÉ !
+        // Exemple: const PASSWORD = 'chaos123'; ou ce que vous voulez
+        // ========================================
+        const PASSWORD = 'amyrsaid';  // <- MODIFIEZ-LE !
+
+        // Vérification du mot de passe
+        function checkPass() {
+            const input = document.getElementById('passInput').value;
+            if (input === PASSWORD) {
+                document.getElementById('passwordModal').style.display = 'none';
+                document.getElementById('dashboard').classList.remove('hidden');
+                localStorage.setItem('dashboardAccess', 'true');
+            } else {
+                document.getElementById('passInput').value = '';
+                document.getElementById('passInput').placeholder = '❌ Mot de passe incorrect ! Réessayez...';
+                setTimeout(() => {
+                    document.getElementById('passInput').placeholder = 'Entrez le mot de passe secret...';
+                }, 2000);
+            }
+        }
+
+        // Vérif auto au chargement
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('dashboardAccess') === 'true') {
+                document.getElementById('passwordModal').style.display = 'none';
+                document.getElementById('dashboard').classList.remove('hidden');
+            }
+            initParticles();
+        });
+
+        // Déconnexion
+        function logout() {
+            localStorage.removeItem('dashboardAccess');
+            location.reload();
+        }
+
+        // Système de particules animées (pour pousser les limites ! 🌌)
+        function initParticles() {
+            const canvas = document.getElementById('bgCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particles = [];
+            const particleCount = 150;
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 3 + 1;
+                    this.speedX = Math.random() * 0.8 - 0.4;
+                    this.speedY = Math.random() * 0.8 - 0.4;
+                    this.hue = Math.random() * 360;
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                    if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+                    this.hue += 1;
+                }
+                draw() {
+                    ctx.save();
+                    ctx.globalAlpha = 0.6;
+                    ctx.fillStyle = `hsl(${this.hue}, 70%, 50%)`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.fillStyle = 'rgba(10, 10, 25, 0.15)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+
+        // Entrée au clic Enter
+        document.getElementById('passInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPass();
+        });
+    </script>
+</body>
+</html>
